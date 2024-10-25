@@ -22,43 +22,42 @@ function addTask(): void {
     const taskRow = document.createElement("div");
     taskRow.classList.add("flex", "w-full", "items-center");
 
-    // Checkbox for task completion
+   
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.classList.add("mr-3", "mt-1");
     checkbox.onclick = updateTaskCount;
 
-    // Task label
     const label = document.createElement("label");
     label.innerHTML = taskText;
     label.classList.add("flex-grow", "break-words");
 
-    // Delete button to remove the task
+   
     const deleteButton = document.createElement("button");
     deleteButton.innerHTML = "Delete";
     deleteButton.classList.add("bg-red-600", "text-white", "px-2", "py-1", "rounded-md", "ml-2", "hover:bg-red-700");
 
-    // Deleting the li element when delete button is clicked
+    
     deleteButton.onclick = function (): void {
-        ul.removeChild(li); // Correctly reference the li element
+        ul.removeChild(li); 
         updateTaskCount();
     };
 
-    // Append the checkbox, label, and delete button to taskRow
+   
     taskRow.appendChild(checkbox);
     taskRow.appendChild(label);
     taskRow.appendChild(deleteButton);
 
-    // Append the taskRow to the li element
+   
     li.appendChild(taskRow);
 
-    // Add the li element to the ul (task list)
+    
     ul.appendChild(li);
 
-    // Clear the input field after adding the task
+   
     taskInput.value = "";
 
-    // Update the task count after adding a task
+    
     updateTaskCount();
 }
 
@@ -69,7 +68,7 @@ function updateTaskCount(): void {
     const completedCount = document.getElementById("completed-count") as HTMLElement;
     const incompleteCount = document.getElementById("incomplete-count") as HTMLElement;
 
-    // Update the counts for completed and incomplete tasks
+   
     completedCount.innerHTML = completedTasks.length.toString();
     incompleteCount.innerHTML = (tasks.length - completedTasks.length).toString();
 }

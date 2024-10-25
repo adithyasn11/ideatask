@@ -89,8 +89,8 @@
 
             if (response.ok) {
                 const data = await response.json();
-                localStorage.setItem('token', data.token); // Store the JWT token
-                window.location.href = '/home'; // Redirect to the home page
+                localStorage.setItem('token', data.token);
+                window.location.href = '/home'; 
             } else {
                 const errorMessage = document.getElementById('error-message');
                 errorMessage.classList.remove('hidden');
