@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My TODO List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-purple-100 flex justify-center items-center h-screen">
+    <div class="w-96 bg-blue-500 rounded-lg p-6 text-center shadow-2xl">
+        <h1 class="text-4xl font-extrabold mb-5 tracking-wider text-yellow-400 underline">My TODO List</h1>
+        <div class="flex justify-center items-center mb-5">
+            <input class="border-none w-56 h-10 px-3 rounded-md focus:outline-none" type="text" id="task" placeholder="Enter your task">
+            <button id="add-btn" class="bg-yellow-500 text-white h-10 w-20 rounded-md ml-3 hover:bg-yellow-600">Add</button>
+        </div>
+        <div class="bg-white rounded-lg p-5 mt-5">
+            <h2 class="text-blue-500 text-lg mb-5">My Tasks</h2>
+            <ul id="task-list" class="list-none p-0"></ul>
+        </div>
+    </div>
+
+    <script>
+        const taskList = document.getElementById('task-list');
+        const addBtn = document.getElementById('add-btn');
+        const taskInput = document.getElementById('task');
+
+        // Function to display tasks
+        function displayTasks(tasks) {
+            taskList.innerHTML = '';  // Clear the task list
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = 'flex justify-between items-center p-2 bg-blue-100 rounded-md mb-2';
+                li.innerHTML = `
+                    <span>${task.task}</span>
+                    <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" onclick="deleteTask('${task._id}')">Delete</button>
+                `;
+                taskList.appendChild(li);
+            });
+        }
+
+        // Load tasks on page load
+        window.onload = async function() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                const response = await fetch('/tasks', {
+                    method: 'GET',
+                    headers: { 'Authorization': token }
+                });
+                const tasks = await response.json();
+                displayTasks(tasks);
+            } else {
+                alert('Please login to see your tasks.');
+                window.location.href = '/';
+            }
+        };
+
+        // Add a new task
+        addBtn.addEventListener('click', async () => {
+            const task = taskInput.value;
+            if (task.trim() === '') return alert('Please enter a task');
+
+            const token = localStorage.getItem('token');
+            if (token) {
+                const response = await fetch('/tasks', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': token,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ task })
+                });
+                const newTask = await response.json();
+
+                // Add new task directly to the DOM without remapping existing tasks
+                const li = document.createElement('li');
+                li.className = 'flex justify-between items-center p-2 bg-blue-100 rounded-md mb-2';
+                li.innerHTML = `
+                    <span>${newTask.task}</span>
+                    <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" onclick="deleteTask('${newTask._id}')">Delete</button>
+                `;
+                taskList.appendChild(li);
+
+                taskInput.value = '';  // Clear the input field
+            } else {
+                alert('Please login to add tasks.');
+                window.location.href = '/';
+            }
+        });
+
+        // Delete a task
+        async function deleteTask(taskId) {
+            const token = localStorage.getItem('token');
+            if (token) {
+                await fetch(`/tasks/${taskId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': token }
+                });
+                window.location.reload();  // Reload the page after deletion
+            } else {
+                alert('Please login to delete tasks.');
+            }
+        }
+    </script>
+</body>
+</html>
