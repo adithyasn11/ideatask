@@ -11,8 +11,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.7.2",
-    "vite": "^5.4.8"
+    "mongoose": "^8.7.2"
   },
   "name": "ai-ds-work",
   "version": "1.0.0",
